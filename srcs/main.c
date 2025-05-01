@@ -49,6 +49,8 @@ void init_mlx_win(t_snake *snake);
 void	put_square(t_snake *snake, int x, int y, int color);
 bool	colision(float px, float py, t_snake *snake, int flag);
 
+int key_release( int key, t_snake *snake);
+int key_press( int key, t_snake *snake);
 
 /* FUNCTIONS */
 
@@ -167,7 +169,9 @@ void *fill_grid(t_snake *snake)
 void move_snake(t_snake *snake)
 {
     if (snake->up && !colision( snake->px,  snake->py - BLOCK, snake, 1) )
+    {
         snake->py -= BLOCK;
+    }
     if (snake->down && !colision( snake->px,  snake->py + BLOCK, snake, 1))
         snake->py += BLOCK;
     if (snake->left && !colision( snake->px - BLOCK,  snake->py, snake, 1))
@@ -179,11 +183,12 @@ void move_snake(t_snake *snake)
 
 int game(t_snake *snake)
 {
+    fill_grid(snake);
     move_snake(snake);
     //put_square(snake,snake->px , snake->py, 0xFFFF);
     mlx_put_image_to_window(snake->con, snake->win, snake->img[1].img, 0,0); // preenche a window
-   //usleep(10000);
-   sleep(1);
+   usleep(150000);
+   //sleep(1);
    //printf("asd\n");
     return 0;
 }
@@ -215,6 +220,11 @@ bool	colision(float px, float py, t_snake *snake, int flag)
 
 int key_press( int key, t_snake *snake)
 {
+    //t_snake * snake = (t_snake*)snake_;
+    snake->up = false;
+    snake->down = false;
+    snake->left = false;
+    snake->right = false;
     if (key == 119)
         snake->up = true;
     if (key == 115)
@@ -225,11 +235,13 @@ int key_press( int key, t_snake *snake)
         snake->right = true;
     if (key == 113 || key == 65307)
         exit(0);
+    printf("%d\n", snake->up);
     return 0;
 }
 
 int key_release( int key, t_snake *snake)
 {
+
     if (key == 119)
         snake->up = false;
     if (key == 115)
@@ -247,6 +259,10 @@ void init_mlx_win(t_snake *snake)
 {
     snake->px = 5*BLOCK;
     snake->py = 7*BLOCK;
+    snake->right = false;
+    snake->left = false;
+    snake->up = false;
+    snake->down = false;
     snake->con = mlx_init();
     snake->win = mlx_new_window(snake->con, WIDTH, HEIGH, "snake game");
     snake->img = (t_img *)malloc(sizeof(t_img) * 2);  // 0 window info, 1 display frames
@@ -259,11 +275,10 @@ void init_mlx_win(t_snake *snake)
 	snake->img[1].addr = mlx_get_data_addr(snake->img[1].img, &snake->img[1].bpp, &snake->img[1].size_line, &snake->img[1].endian);
     
     snake->map = get_map();
-    fill_grid(snake);
 
-   mlx_hook(snake->win, 2, 1L << 0, key_press, &snake);
-	mlx_hook(snake->win, 3, 1L << 1, key_release, &snake);
-    mlx_loop_hook(snake->con, &game, snake);
+   mlx_hook(snake->win, 2, 1L << 0, key_press, snake);
+	//mlx_hook(snake->win, 3, 1L << 1, key_release, snake);
+    mlx_loop_hook(snake->con, game, snake);
     mlx_loop(snake->con);
 }
 
