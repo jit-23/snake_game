@@ -7,11 +7,11 @@ RED:=\033[0;31m
 BLUE=\033[0;34m
 default_colour=\033[0m
 
-SRC_FILES:=  main.c\
+SRC_FILES:=  main.c game.c draw.c player_functions.c lst_utils.c
 
 MAKE:= make -j -C
-#LIBFT_DIR:= libs/libft
-#LIBFT:= libs/libft/libft.a
+LIBFT_DIR:= libs/libft
+LIBFT:= libs/libft/libft.a
 #
 MLX_DIR:= libs/mlx/
 MLX:= -L libs/mlx -lmlx -Ilmlx -lXext -lX11 -lm #-lm -lXext -lX11#libs/mlx/libmlx_Linux.a
@@ -26,9 +26,9 @@ OBJ = $(addprefix $(OBJ_PATH), $(OBJ_FILES))
 
 all: ${NAME}
 
-#${COMP_LIB}:
-#		echo "${RED}DONE${default_colour}"
-#		${MAKE} ${LIBFT_DIR}
+${COMP_LIB}:
+		echo "${RED}DONE${default_colour}"
+		${MAKE} ${LIBFT_DIR}
 
 ${COMP_MLX}:
 		echo "${RED}DONE${default_colour}"
@@ -39,26 +39,24 @@ $(OBJ_PATH)%.o : $(SRC_PATH)%.c
 		cc   ${CFLAGS}  -c $< -o $@
 
 ${NAME}:  ${OBJ}
-#		${MAKE} ${LIBFT_DIR}
+		${MAKE} ${LIBFT_DIR}
 		${MAKE} ${MLX_DIR}
 		cc  -I. ${CFLAGS} ${OBJ}  ${MLX} -o ${NAME}
 		@echo "${GREEN}executable file: ./${NAME}${default_colour}\n"
 
 clean:
-		#${MAKE} ${MLX_DIR} clean
+#${MAKE} ${MLX_DIR} clean
+		${MAKE} ${LIBFT_DIR} clean
 		@rm -fr ${OBJ_PATH}
 		@echo "${RED}object files and directory deleted:${default_colour}"
-#${MAKE} ${LIBFT_DIR} clean
 
-#valgrind: ${NAME}
-#			valgrind  --leak-check=full --show-leak-kinds=all ./cub
 
 fclean: clean
 #		${MAKE} ${MLX_DIR} fclean
+		${MAKE} ${LIBFT_DIR} fclean
 		@rm -f ${NAME}
 		@echo "${RED}executable deleted:$(default_colour)"
 		@echo "${RED}deleted all:$(default_colour)\n"
-#${MAKE} ${LIBFT_DIR} fclean
 
 re : fclean all
 
