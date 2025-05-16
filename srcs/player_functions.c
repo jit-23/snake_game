@@ -1,10 +1,9 @@
 #include "../libs/snake.h"
 
-
-t_snake_node *new_snake_node(t_snake_node *last, int x, int y)
+/* last node will be updated here so that it keeps track of the tail. */
+void new_snake_node(t_snake_node **last, int x, int y)
 {
 	t_snake_node *tmp;
-
 	tmp = (t_snake_node*)malloc(sizeof(t_snake_node));
 	if (!tmp)
 		printf("error\n");
@@ -12,19 +11,28 @@ t_snake_node *new_snake_node(t_snake_node *last, int x, int y)
 	tmp->x = x;
 	tmp->y = y;
 	tmp->next = NULL;
-	
-	last->next = tmp;
-	return (NULL); // dont care. the pointer to its head its in the main struct
+
+	if ((*last))
+	{
+		(*last)->next = tmp;
+	}
+	(*last) = tmp;
 }
 
-void create_snake(t_snake_node *head)
+void create_snake(t_snake *snake_body)
 {
-	t_snake_node *tmp;
-	//if (!head)
-	// 	tmp =  (t_snake_node *)malloc(sizeof(t_snake_node));
+	t_snake_node *last = NULL;
 	int i = -1;
+	snake_body->head = NULL;
+//	t_snake_node *a = (*snake_body->head);
+	if (!snake_body)
+		printf("snake_body->head ENPTY\n");
 	while(++i < 4)
-		new_snake_node(ft_lstlast(head), i, 2);
+	{
+		new_snake_node(&last, i+3, 2);
+		if (!snake_body->head)
+			snake_body->head = last;
+	}
 	
 }
 
@@ -32,7 +40,7 @@ t_snake_node *init_snake(t_snake *snake)
 {
 	snake->length = 4;
 	snake->diretion = RIGHT;
-	create_snake(snake->head);
+	create_snake(snake);
 }
 	
 

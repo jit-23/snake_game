@@ -26,14 +26,27 @@ void init_mlx_win(t_snake_game *game)
 	if (!game->player)
 		perror("error on player creation\n");
 	memset((void *)game->player, 0, sizeof(game->player));
-
+    
 	init_snake(game->player);
-
+    if (!game->player->head)
+        printf("no");
+    t_snake_node *s = game->player->head;
+    while(s)
+    {
+        printf("x - %d\n", s->x);
+        s = s->next;
+    }
+   // while (game->player->head)
+   // {
+   //     printf("x of head = %d\n", game->player->head->x);
+   //     game->player->head  = game->player->head->next;
+   // }
+        
 
 
 	mlx_hook(game->win, 2, 1L << 0, key_press, game);
 	//mlx_hook(game->win, 3, 1L << 1, key_release, game);
-    mlx_loop_hook(game->con, game, game);
+    mlx_loop_hook(game->con, start_game, game);
 	mlx_loop(game->con);
 }
 
