@@ -45,7 +45,7 @@ t_snake_node *init_snake(t_snake *snake)
 	
 
 /* head 1:
-	x = 4;
+	x = 4; 
 	y = 2;
 
 	head 2:
