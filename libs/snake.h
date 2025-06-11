@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "../libs/mlx/mlx.h"
+#include "../libs/libft/libft.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
@@ -55,7 +56,7 @@ typedef struct s_snake
 {
 	int length;
 	int diretion;
-	t_snake_node *head;
+	t_snake_node **head;
 }t_snake;
 
 
@@ -82,7 +83,7 @@ typedef struct s_snake_game
 
 
 void *fill_grid(t_snake_game *snake);
-int game(t_snake_game *snake);
+int start_game(t_snake_game *snake);
 void init_mlx_win(t_snake_game *snake);
 void	put_square(t_snake_game *snake, int x, int y, int color);
 bool	colision(float px, float py, t_snake_game *snake, int flag);
@@ -91,10 +92,10 @@ char	**get_map(void);
 int key_release( int key, t_snake_game *snake);
 int key_press( int key, t_snake_game *snake);
 t_snake_node	*ft_lstlast(t_snake_node *head);
-void create_snake(t_snake_node *head);
+void create_snake(t_snake *head);
 
 t_snake_node *init_snake(t_snake *snake);
-t_snake_node *new_snake_node(t_snake_node *last, int x, int y);
+void new_snake_node(t_snake_node **last, int x, int y);
 
 
 #endif

@@ -34,8 +34,13 @@ void move_snake(t_snake_game *snake)
 {
 
     printf("fl1ag1\n");
+    printf("_%d_\n", snake->up);
+    printf("_%d_\n", snake->down);
+    printf("_%d_\n", snake->right);
+    printf("_%d_\n", snake->left);
     if (snake->up  /*&& !colision( snake->px,  snake->py - BLOCK, snake, 1) */)
     {
+        printf("up\n");
         move_body(snake->player->head, UP);
     }
         //snake->py -= BLOCK;
@@ -44,13 +49,17 @@ void move_snake(t_snake_game *snake)
     if (snake->left && !colision( snake->px - BLOCK,  snake->py, snake, 1))
         move_body(snake->player->head, LEFT);//snake->px -= BLOCK;
     if (snake->right && !colision( snake->px + BLOCK,  snake->py , snake, 1))
-        move_body(snake->player->head, RIGHT);//snake->px += BLOCK;
-    t_snake_node *a = *snake->player->head;
-    for (int i = 0; i < 4; i++)
     {
-        put_square(snake, a->x/BLOCK, a->y/BLOCK, 0xFFF);
-        a=a->next;
+        printf("right\n");
+        move_body(snake->player->head, RIGHT);//snake->px += BLOCK;
     }
+    printf("here\n");
+    //t_snake_node *a = *snake->player->head;
+    //for (int i = 0; i < 4; i++)
+    //{
+    //    put_square(snake, a->x/BLOCK, a->y/BLOCK, 0xFFF);
+    //    a=a->next;
+    //}
     
 }
 
