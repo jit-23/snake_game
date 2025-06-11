@@ -1,63 +1,98 @@
 #include "../libs/snake.h"
 
 /* HAHAAHAHAH esta merda esta mesmo mal xDDDDDDDD , 4:35 am, vou mas e dormir*/ // a ideia esta aqui, mas fds xD
-static void move_body(t_snake_node **head, int direction)
+void move_body(t_snake_game *snake, t_snake_node **head, int direction)
 {
     t_snake_node *tmp = *head;
-    int old_x;
-    int old_y;
+    int old_x = tmp->x;
+    int old_y = tmp->y;
 
     int tmp_x;
     int tmp_y;
-    
-    if (direction == UP)
-        tmp->y--;
-    else if (direction == DOWN)
-        tmp->y++;
-    else if (direction == LEFT)
-        tmp->x--;
-    else if (direction == RIGHT)
-        tmp->x++;
-    tmp = tmp->next;
-    while(tmp) 
-    {
-        tmp_x = tmp->x; 
-        tmp_y = tmp->y;
 
+	int tail_x = old_x;
+	int tail_y = old_y;
+    
+	if (snake->dir == 0)
+	{
+		if (colision(tmp->x ,tmp->y-BLOCK,snake, 0))
+			exit(1);
+	}
+
+    if (direction == UP)
+		tmp->y -= BLOCK;
+    else if (direction == DOWN)
+        tmp->y+= BLOCK;
+    else if (direction == LEFT)
+        tmp->x-= BLOCK;
+    else if (direction == RIGHT)
+		tmp->x+= BLOCK;
+    tmp = tmp->next;
+    while(tmp)
+    {
+		tmp_x = tmp->x; 
+        tmp_y = tmp->y;
+		
         tmp->x = old_x;
         tmp->y = old_y;
-        tmp = tmp->next;
+	
+		old_x = tmp_x;
+		old_y = tmp_y;
+		if (!tmp->next)
+		{
+			tail_x = tmp_x;
+			tail_y = tmp_y;
+		}
+		tmp = tmp->next;
+    }
+	put_full_square(snake, tail_x , tail_y, 0x0);
+}
+
+/* put_snake_body_in_screen */
+
+void put_snake_in_map(t_snake_game *snake)
+{
+    t_snake_node *a = snake->player->head;
+
+	while(a)
+	{
+        put_full_square(snake, a->x, a->y, 0xFFF);
+		a = a->next;
     }
 }
 
 void move_snake(t_snake_game *snake)
 {
 
-    printf("fl1ag1\n");
     if (snake->up  /*&& !colision( snake->px,  snake->py - BLOCK, snake, 1) */)
-    {
-        move_body(snake->player->head, UP);
-    }
-        //snake->py -= BLOCK;
-    if (snake->down && !colision( snake->px,  snake->py + BLOCK, snake, 1))
-       move_body(snake->player->head, DOWN); //snake->py += BLOCK;
-    if (snake->left && !colision( snake->px - BLOCK,  snake->py, snake, 1))
-        move_body(snake->player->head, LEFT);//snake->px -= BLOCK;
-    if (snake->right && !colision( snake->px + BLOCK,  snake->py , snake, 1))
-        move_body(snake->player->head, RIGHT);//snake->px += BLOCK;
-    t_snake_node *a = *snake->player->head;
-    for (int i = 0; i < 4; i++)
-    {
-        put_square(snake, a->x/BLOCK, a->y/BLOCK, 0xFFF);
-        a=a->next;
-    }
+        move_body(snake,&snake->player->head, UP);//snake->py -= BLOCK;
+    if (snake->down /* && !colision( snake->px,  snake->py + BLOCK, snake, 1) */)
+       move_body(snake,&snake->player->head, DOWN); //snake->py += BLOCK;
+    if (snake->left /* && !colision( snake->px - BLOCK,  snake->py, snake, 1) */)
+        move_body(snake,&snake->player->head, LEFT);//snake->px -= BLOCK;
+    if (snake->right /* && !colision( snake->px + BLOCK,  snake->py , snake, 1) */)
+        move_body(snake,&snake->player->head, RIGHT);//snake->px += BLOCK;
+	t_snake_node *a = snake->player->head;
+	while(a)
+	{
+		put_full_square(snake, a->x/* /BLOCK */, a->y/* /BLOCK */, 0xFFF);
+		//printf("-------=\n");
+		//printf("x - %d\n", a->x);
+		//printf("y - %d\n", a->y);
+		a = a->next;
+	}	
     
 }
 
 int start_game(t_snake_game *snake)
 {
+	static int i = 0;
+
     fill_grid(snake);
-    move_snake(snake);
+	if (i == 0)
+		put_snake_in_map(snake); i++;
+    
+	move_snake(snake);
 
     //put_square(snake,snake->px , snake->py, 0xFFFF);
     mlx_put_image_to_window(snake->con, snake->win, snake->img[1].img, 0,0); // preenche a window
@@ -96,31 +131,83 @@ int key_press( int key, t_snake_game *snake)
     snake->down = false;
     snake->left = false;
     snake->right = false;
-    if (key == 119)
-        snake->up = true;
-    if (key == 115)
-        snake->down = true;
-    if (key == 97)
-        snake->left = true;
-    if (key == 100)
-        snake->right = true;
+	if (snake->dir == 0)
+		printf("up\n");
+    else if (snake->dir == 1)
+		printf("down\n");
+	else if (snake->dir == 2)
+		printf("left\n");
+	else if (snake->dir == 3)
+		printf("RIGHT\n");
+	if (key == 119 /* && snake->dir != 1 */)
+	{
+		if (snake->dir !=1)
+		{
+        	snake->up = true;
+			snake->dir = 0;
+
+		}
+		else
+		{
+			snake->down = true;
+		}
+	}
+    if (key == 115 /* && snake->dir != 0 */)
+	{
+		if (snake->dir !=0)
+		{
+        	snake->down = true;
+			snake->dir = 1;
+
+		}
+		else
+			snake->up = true;
+	}
+    if (key == 97 /* && snake->dir != 3 */)
+	{
+		if (snake->dir != 3)
+		{
+        	snake->left = true;
+			snake->dir = 2;
+
+		}
+		else
+		{
+			snake->right = true;
+
+		}
+	}
+    if (key == 100/* && snake->dir != 2 */)
+	{
+		if (snake->dir !=2)
+        {
+			snake->right = true;
+			snake->dir = 3;
+
+		}
+		else
+		{
+			snake->left = true;
+
+		}
+	}
     if (key == 113 || key == 65307)
         exit(0);
-    printf("%d\n", snake->up);
+    printf("-------\n"/*,  snake->up */);
     return 0;
 }
 
 int key_release( int key, t_snake_game *snake)
-{
+{ // funcao cagativa.
 	
-    if (key == 119)
-        snake->up = false;
-    if (key == 115)
-        snake->down = false;
-    if (key == 97)
-        snake->left = false;
-    if (key == 100)
-        snake->right = false;
+    //if (key == 119 )
+    //    snake->up = false;
+    //if (key == 115)
+    //    snake->down = false;
+    //if (key == 97)
+    //    snake->left = false;
+    //if (key == 100)
+    //    snake->right = false;
     return 0;
 }
 

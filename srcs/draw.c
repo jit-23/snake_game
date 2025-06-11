@@ -14,6 +14,25 @@ void	put_pixel(t_snake_game *snake, int x, int y, int color)
 	snake->img[1].addr[index + 2] = (color >> 16) & 0xFF;
 }
 
+
+void	put_full_square(t_snake_game *snake, int x, int y, int color)
+{
+	int	size;
+	int	i;
+
+
+	i = -1;
+	int j = -1;
+	size = BLOCK;
+	
+	while(++i < size)
+	{
+		j = -1;
+		while(++j < size)
+			put_pixel(snake, x+i, y+j, color);
+	}
+}
+
 void	put_square(t_snake_game *snake, int x, int y, int color)
 {
 	int	size;
@@ -40,7 +59,7 @@ char	**get_map(void)
 {
 	char	**map;
 
-	map = malloc(sizeof(char *) * 11);
+	map = malloc(sizeof(char *) * 22);
 	map[0] = "11111111111111111111111";
 	map[1] = "10000000000000000000001";
 	map[2] = "10000000000000000000001";
@@ -48,10 +67,18 @@ char	**get_map(void)
 	map[4] = "10000000000000000000001";
 	map[5] = "10000000000000000000001";
 	map[6] = "10000000000000000000001";
-	map[7] = "10000000000000000D00001";
+	map[7] = "10000000000000000000001";
 	map[8] = "10000000000000000000001";
-	map[9] = "11111111111111111111111";
-	map[10] = NULL;
+	map[9] = "10000000000000000000001";
+	map[10] = "10000000000000000000001";
+	map[11] = "10000000000000000000001";
+	map[12] = "10000000000000000000001";
+	map[13] = "10000000000000000000001";
+	map[14] = "10000000000000000000001";
+	map[15] = "10000000000000000D00001";
+	map[16] = "10000000000000000000001";
+	map[17] = "11111111111111111111111";
+	map[18] = NULL;
 	return (map);
 }
 
@@ -85,6 +112,12 @@ void *fill_grid(t_snake_game *snake)
 	x = -1;
 	y = 0;
 	map = snake->map;
+	if (!map)
+	{
+		printf("error on map\n");
+		exit(1);
+
+	}
 	color1 = 0x00FF0F;
 	color2 = 0x0000FF;
 	while (map[y])
