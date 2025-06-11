@@ -41,8 +41,9 @@ $(OBJ_PATH)%.o : $(SRC_PATH)%.c
 ${NAME}:  ${OBJ}
 		${MAKE} ${LIBFT_DIR}
 		${MAKE} ${MLX_DIR}
-		cc  -I. ${CFLAGS} ${OBJ}  ${MLX} -o ${NAME}
+		cc  -I. ${CFLAGS} ${OBJ} ${LIBFT} ${MLX} -o ${NAME}
 		@echo "${GREEN}executable file: ./${NAME}${default_colour}\n"
+#		@./${NAME}
 
 clean:
 #${MAKE} ${MLX_DIR} clean
