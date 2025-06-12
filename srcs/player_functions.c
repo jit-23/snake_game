@@ -27,14 +27,23 @@ void create_snake(t_snake *snake_body)
 //	t_snake_node *a = (*snake_body->head);
 	if (!snake_body)
 		printf("snake_body->head ENPTY\n");
-	while(++i < 4)
+	int f =  4;
+		while(++i < 4)
 	{
-		new_snake_node(&last, i+3, 2);
+		new_snake_node(&last, f-- * BLOCK, 2 * BLOCK);
 		if (!snake_body->head)
 			snake_body->head = last;
 	}
-	
+	t_snake_node *a = snake_body->head;
+	while(a)
+	{
+//		printf("x - %d\n", a->x);
+//		printf("y - %d\n", a->y);	
+		a=a->next;
+	}
+	//printf("=-------------\n");
 }
+
 
 t_snake_node *init_snake(t_snake *snake)
 {
@@ -45,7 +54,7 @@ t_snake_node *init_snake(t_snake *snake)
 	
 
 /* head 1:
-	x = 4;
+	x = 4; 
 	y = 2;
 
 	head 2:
