@@ -1,6 +1,21 @@
 #include "../libs/snake.h"
 /* FUNCTIONS */
 
+void init_fruit(t_snake_game *snake)
+{
+    int x_max = ft_strlen(snake->map[0]);
+    int y_max = 0;
+    while(snake->map[y_max])
+        y_max++;
+    x_max--;
+    y_max--;
+    
+    for (int i = 0; i < 5; i++)
+    {
+        snake->fruit[i].x =  rand() % (x_max - BLOCK + 1);
+        snake->fruit[i].y =  rand() % (y_max - BLOCK + 1);
+    }
+}
 
 void init_mlx_win(t_snake_game *game)
 {
@@ -28,23 +43,8 @@ void init_mlx_win(t_snake_game *game)
 		perror("error on player creation\n");
 	memset((void *)game->player, 0, sizeof(game->player));
 	
+    init_fruit(game);
 	init_snake(game->player);
-	if (!game->player->head)
-    printf("no");
-	t_snake_node *s = game->player->head;
-	while(s)
-	{
-		printf("x - %d\n", s->x);
-		s = s->next;
-	}
-   // while (game->player->head)
-   // {
-   //     printf("x of head = %d\n", game->player->head->x);
-   //     game->player->head  = game->player->head->next;
-   // }
-        
-
-
 	mlx_hook(game->win, 2, 1L << 0, key_press, game);
 	//mlx_hook(game->win, 3, 1L << 1, key_release, game);
     mlx_loop_hook(game->con, start_game, game);
@@ -53,9 +53,10 @@ void init_mlx_win(t_snake_game *game)
 
 /* MAIN.C */
 
+
 int main(/* int ac, char  *av[] */)
 {
-
+    srand(time(NULL));
     t_snake_game *game = (t_snake_game*)malloc(sizeof(t_snake_game));
 
     init_mlx_win(game);
