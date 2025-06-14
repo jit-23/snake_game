@@ -12,22 +12,38 @@ void init_fruit(t_snake_game *snake)
     
     for (int i = 0; i < 5; i++)
     {
-        snake->fruit[i].x =  rand() % (x_max - BLOCK + 1);
-        snake->fruit[i].y =  rand() % (y_max - BLOCK + 1);
+        snake->fruit[i].x =  rand() % (x_max - 1 ) + 1;
+        snake->fruit[i].y =  rand() % (y_max - 1 ) + 1;
+        snake->fruit[i].eated = false;
     }
 }
+
+int get_map_heigh(char**map)
+{   
+    int height = 0;
+    while(map[height])
+        height++;
+    return height;
+}
+
+int get_map_width(char**map)
+{   
+    return (ft_strlen(map[0]));
+}
+
 
 void init_mlx_win(t_snake_game *game)
 {
 	game->dir = 3;
-	game->px = 5*BLOCK;// apaga
-    game->py = 7*BLOCK;// apaga
+	game->px = 5 *  BLOCK;// apaga
+    game->py = 7 * BLOCK;// apaga
     game->right = false; // start point
     game->left = false;
     game->up = false;
     game->down = false;
+    game->map = get_map();
     game->con = mlx_init();
-    game->win = mlx_new_window(game->con, WIDTH, HEIGH, "game game");
+    game->win = mlx_new_window(game->con, get_map_width(game->map)*BLOCK + 1, get_map_heigh(game->map)*BLOCK + 1, "game game");
     game->img = (t_img *)malloc(sizeof(t_img) * 2);  // 0 window info, 1 display frames
 	
     game->img[0].img = mlx_new_image(game->con, WIDTH, HEIGH);
@@ -37,7 +53,6 @@ void init_mlx_win(t_snake_game *game)
     game->img[1].img = mlx_new_image(game->con, WIDTH, HEIGH); // imagem da qual vou preencher com os frames
 	game->img[1].addr = mlx_get_data_addr(game->img[1].img, &game->img[1].bpp, &game->img[1].size_line, &game->img[1].endian);
     
-    game->map = get_map();
 	game->player = (t_snake *)malloc(sizeof(t_snake));
 	if (!game->player)
 		perror("error on player creation\n");

@@ -25,6 +25,7 @@ typedef struct s_fruit
 {
 	int x;
 	int y;
+	bool eated;
 }t_fruit;
 
 typedef struct s_img
@@ -83,6 +84,7 @@ typedef struct s_snake_game
     t_img	*img;
 	t_snake	*player;
 	t_fruit fruit[5];
+	bool stop;
     int px;
     int py;
 
