@@ -1,8 +1,9 @@
 #include "../libs/snake.h"
+#include <unistd.h> // for usleep()
 
 void wall_c()
 {
-	usleep(150000);
+	usleep(150000); // para sacar o erro, tenho q fazer o meu proprio usleep xddddddddd . faz dps
 	exit(1);
 }
 
@@ -166,6 +167,7 @@ void move_body(t_snake_game *snake, t_snake_node **head, int direction)
     }
 	if (check_fruit_pos(snake))
 	{
+		snake->points++;
 		update_fruit_pos(snake);
 		new_snake_tail(snake, tail_x,tail_y);
 	}
@@ -223,21 +225,40 @@ int	aft_lstsize(t_snake_node *lst)
 void fill_grid_with_fruits(t_snake_game *snake)
 {
 	for (int i = 0; i < 5; i++)
-		put_full_square(snake, snake->fruit[i].x*BLOCK, snake->fruit[i].y*BLOCK, 0xFFFF);
+		put_filled_circle(snake, snake->fruit[i].x*BLOCK+15, snake->fruit[i].y*BLOCK+15, 0xFF0000);
 } 
+
+void game_movement(t_snake_game *snake, double dt)
+{
+	
+	snake->accumulator += dt;
+    while (snake->accumulator >= snake->move_interval) {
+        move_snake(snake);
+        snake->accumulator -= snake->move_interval;
+	}
+    mlx_put_image_to_window(snake->con, snake->win, snake->img[1].img, 0,0); // preenche a window
+}
 
 int start_game(t_snake_game *snake)
 {
 	static int i = 0;
-
-    fill_grid(snake);
+	long long currentTime = current_time_ns();
+    long long elapsed = currentTime - snake->previoustime;
+	fill_grid(snake);
 	fill_grid_with_fruits(snake);
 	if (i == 0)
-		put_snake_in_map(snake); i++;
-    
-	move_snake(snake);
-    mlx_put_image_to_window(snake->con, snake->win, snake->img[1].img, 0,0); // preenche a window
-   	usleep(136000);
+	{
+		put_snake_in_map(snake); 
+		i++;
+	}
+	snake->previoustime = currentTime;
+    snake->lag += elapsed;
+	while (snake->lag >= FRAME_DURATION_NS)
+	{
+        game_movement(snake, FRAME_DURATION_NS / 1e9); // pass time in seconds
+        snake->lag -= FRAME_DURATION_NS;
+    }
+
     return 0;
 }
 

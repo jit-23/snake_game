@@ -45,7 +45,7 @@ void create_snake(t_snake *snake_body)
 }
 
 
-t_snake_node *init_snake(t_snake *snake)
+void init_snake(t_snake *snake)
 {
 	snake->length = 4;
 	snake->diretion = RIGHT;

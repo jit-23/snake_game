@@ -101,7 +101,7 @@ char	**get_map(void)
     // 
 // }
 
-void *fill_grid(t_snake_game *snake)
+void fill_grid(t_snake_game *snake)
 {
    	char	**map;
 	int		color1;
@@ -118,19 +118,19 @@ void *fill_grid(t_snake_game *snake)
 		exit(1);
 
 	}
-	color1 = 0x00FF0F;
-	color2 = 0x0000FF;
-	while (map[y])
+	color1 = 0x301934/* 0x00FF0F */;
+	color2 = 	/* 0x301934 */0x0000FF;
+	/* while (map[y])
 	{
 		x = -1;
 		while (map[y][++x])
 		if (map[y][x] == '0')
 		{
-			put_square(snake, x * BLOCK, y * BLOCK, color2);
+			put_full_square(snake, x * BLOCK, y * BLOCK, color2);
 
 		}
 		y++;
-	}
+	} */
     x = -1;
     y = -1;
     while (map[++y])
@@ -138,6 +138,64 @@ void *fill_grid(t_snake_game *snake)
 		x = -1;
 		while (map[y][++x])
 			if (map[y][x] == '1')
-				put_square(snake, x * BLOCK, y * BLOCK, color1);
+				put_full_square(snake, x * BLOCK, y * BLOCK, color1);
     }
+	double points_posx = (double)x - 2.6;
+	double points_posy = (double)y - 0.4;
+	mlx_string_put(snake->con, snake->win, points_posx * BLOCK , points_posy * BLOCK,0xCBC3E3 , "Points: ");
+	mlx_string_put(snake->con, snake->win, points_posx * BLOCK + 50 , points_posy * BLOCK ,0xCBC3E3 , ft_itoa(snake->points));
+
+}
+
+
+void	put_filled_circle(t_snake_game *snake, int center_x, int center_y, int color)
+{
+	int radius = 10;
+	int dx, dy;
+
+
+	for (int y = -radius; y <= radius; y++)
+	{
+		for (int x = -radius; x <= radius; x++)
+		{
+			dx = center_x + x;
+			dy = center_y + y;
+			if (x * x + y * y <= radius * radius)
+			{
+				put_pixel(snake,  dx , dy , color);
+			}
+		}
+	}
+	radius = 12;
+	for (int y = -radius; y <= radius; y++)
+	{
+		for (int  x= -radius; x <= radius; x++)
+		{
+			dx = center_x + x;
+			dy = center_y + y;
+			if (y < 0 && (x < 2 && x > -2))
+			{
+				put_pixel(snake,  dx , dy , 0x008e02);
+			}
+		}
+	}
+	
+}
+
+void	put_circle(t_snake_game *snake, int x, int y, int color)
+{
+	double	theta;
+
+	for (int i = 0; i < 5; i++)
+	{
+		theta = 0;
+		while (theta <= 2 * PI)
+		{
+			x = snake->fruit[i].x + 20 * cos(theta);
+			y = snake->fruit[i].y + 20 * sin(theta);
+			put_pixel(snake, x *BLOCK, y *BLOCK, color);
+			theta += 0.01;
+		}
+	}
+	
 }

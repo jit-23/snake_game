@@ -1,5 +1,5 @@
 NAME:= as_game
-CFLAGS:= -g #-Wall -Werror -Wextra
+CFLAGS:= -g  -std=c11#-Wall -Werror -Wextra
 
 #HEADER = includes/libs/cub.h
 GREEN:= \033[0;32m
@@ -9,22 +9,27 @@ default_colour=\033[0m
 
 SRC_FILES:=  main.c game.c draw.c player_functions.c lst_utils.c
 
+MLXFLAGS = -L/usr/X11R6/lib -lX11 -lXext -lm
+MLX = mlx/libmlx_Linux.a
+
+
 MAKE:= make -j -C
 LIBFT_DIR:= libs/libft
 LIBFT:= libs/libft/libft.a
 #
-MLX_DIR:= libs/mlx/
-MLX:= -L libs/mlx -lmlx -Ilmlx -lXext -lX11 -lm #-lm -lXext -lX11#libs/mlx/libmlx_Linux.a
+MLX_DIR:= mlx/
+MLX:= -L mlx -lmlx -Ilmlx -lXext -lX11 -lm #-lm -lXext -lX11#libs/mlx/libmlx_Linux.a
 #-L mlx -lmlx -Ilmlx -lXext -lX11 -lm
 OBJ_FILES:= $(patsubst %.c, %.o, $(SRC_FILES))
-
+GREEN=\e[38;5;118m
 SRC_PATH:= srcs/
 OBJ_PATH:= obj/
+END= $<\e[0m
 
 SRC = $(addprefix $(SRC_PATH), $(SRC_FILES))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_FILES))
 
-all: ${NAME}
+all: checker ${NAME}
 
 ${COMP_LIB}:
 		echo "${RED}DONE${default_colour}"
@@ -45,6 +50,15 @@ ${NAME}:  ${OBJ}
 		@echo "${GREEN}executable file: ./${NAME}${default_colour}\n"
 #		@./${NAME}
 
+checker:
+	@if [ -d "mlx" ]; then echo "$(GREEN)[MLX FOLDER FOUND]$(END)"; else make download; fi
+
+download:
+	git clone git@github.com:42Paris/minilibx-linux.git mlx
+
+mlx_clean:
+	rm -rf mlx
+
 clean:
 #${MAKE} ${MLX_DIR} clean
 		${MAKE} ${LIBFT_DIR} clean
@@ -52,7 +66,7 @@ clean:
 		@echo "${RED}object files and directory deleted:${default_colour}"
 
 
-fclean: clean
+fclean: mlx_clean clean
 #		${MAKE} ${MLX_DIR} fclean
 		${MAKE} ${LIBFT_DIR} fclean
 		@rm -f ${NAME}

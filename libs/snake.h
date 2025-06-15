@@ -1,14 +1,20 @@
 #ifndef SNAKE
 #define SNAKE
 
+#define _POSIX_C_SOURCE 199309L
 #include <stdio.h>
-#include "../libs/mlx/mlx.h"
+#include "../mlx/mlx.h"
 #include "../libs/libft/libft.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <math.h>
+#define PI 3.14159
+
+#define TARGET_FPS 60
+#define FRAME_DURATION_NS (1000000000 / TARGET_FPS) // 16,666,666 ns (60 fps)
 
 /* MACROS */
 
@@ -88,12 +94,23 @@ typedef struct s_snake_game
     int px;
     int py;
 
+	long long previoustime;
+	long long lag;
+	double accumulator;
+	double move_interval;
+
+	int points;
+
 }t_snake_game;
 
 /* HEADERS */
+void	put_circle(t_snake_game *snake, int x, int y, int color);
+void	put_filled_circle(t_snake_game *snake, int x, int y, int color);
 
+long long current_time_ns();
+void game_movement(t_snake_game *snake, double dt);
 
-void *fill_grid(t_snake_game *snake);
+void fill_grid(t_snake_game *snake);
 int start_game(t_snake_game *snake);
 void init_mlx_win(t_snake_game *snake);
 void	put_square(t_snake_game *snake, int x, int y, int color);
@@ -106,7 +123,7 @@ int key_press( int key, t_snake_game *snake);
 t_snake_node	*ft_lstlast(t_snake_node *head);
 void create_snake(t_snake *snake_body);
 
-t_snake_node *init_snake(t_snake *snake);
+void init_snake(t_snake *snake);
 void new_snake_node(t_snake_node **last, int x, int y);
 void move_body(t_snake_game *snake,t_snake_node **head, int direction);
 void	put_full_square(t_snake_game *snake, int x, int y, int color);

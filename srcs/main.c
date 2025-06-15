@@ -17,7 +17,6 @@ void init_fruit(t_snake_game *snake)
         snake->fruit[i].eated = false;
     }
 }
-
 int get_map_heigh(char**map)
 {   
     int height = 0;
@@ -31,6 +30,11 @@ int get_map_width(char**map)
     return (ft_strlen(map[0]));
 }
 
+long long current_time_ns() {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts); // High precision time
+    return (long long)ts.tv_sec * 1000000000LL + ts.tv_nsec;
+}
 
 void init_mlx_win(t_snake_game *game)
 {
@@ -58,6 +62,13 @@ void init_mlx_win(t_snake_game *game)
 		perror("error on player creation\n");
 	memset((void *)game->player, 0, sizeof(game->player));
 	
+
+    game->previoustime = current_time_ns();
+    game->lag = 0;
+    game->accumulator = 0.0;
+    game->move_interval = 0.2;
+    game->points = 0;
+
     init_fruit(game);
 	init_snake(game->player);
 	mlx_hook(game->win, 2, 1L << 0, key_press, game);
