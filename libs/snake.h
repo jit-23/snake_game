@@ -21,7 +21,7 @@
 
 #define WIDTH 800
 #define HEIGH 800
-#define BLOCK 30
+#define BLOCK 15
 /* STRUCTS */
 
 typedef struct s_snake_node t_snake_node;
@@ -62,44 +62,47 @@ typedef struct s_food
 
 typedef struct s_snake_node
 {
+	t_snake_node *next;
 	int x;
 	int y;
-	t_snake_node *next;
 
 }t_snake_node;
 
 
 typedef struct s_snake
 {
+	t_snake_node *head;
 	int length;
 	int diretion;
-	t_snake_node *head;
 }t_snake;
 
 
 typedef struct s_snake_game
 {
+	t_fruit fruit[5];
+    t_img	*img;
+	t_snake	*player;
     void	*win;
     void 	*con;
     char	**map;
-	int		dir;
-    bool	up;
-    bool 	down;
-    bool 	left;
-    bool	right;
-    t_img	*img;
-	t_snake	*player;
-	t_fruit fruit[5];
-	bool stop;
-    int px;
-    int py;
-
 	long long previoustime;
 	long long lag;
 	double accumulator;
 	double move_interval;
-
+	int		dir;
+    int px;
+    int py;
 	int points;
+
+
+	int contin;
+    bool	up;
+    bool 	down;
+    bool 	left;
+    bool	right;
+	bool can_move;
+
+
 
 }t_snake_game;
 
@@ -114,7 +117,6 @@ void fill_grid(t_snake_game *snake);
 int start_game(t_snake_game *snake);
 void init_mlx_win(t_snake_game *snake);
 void	put_square(t_snake_game *snake, int x, int y, int color);
-bool	colision(float px, float py, t_snake_game *snake, int flag);
 char	**get_map(void);
 void put_snake_in_map(t_snake_game *snake);
 

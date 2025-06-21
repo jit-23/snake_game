@@ -135,6 +135,7 @@ void move_body(t_snake_game *snake, t_snake_node **head, int direction)
 
 	int next_x = old_x;
 	int next_y = old_y;
+	//snake->can_move = false;
     if (direction == UP)
 		next_y -= BLOCK;
     else if (direction == DOWN)
@@ -173,6 +174,8 @@ void move_body(t_snake_game *snake, t_snake_node **head, int direction)
 	}
 	else
 		put_full_square(snake, tail_x , tail_y, 0x0);
+	snake->can_move = true;
+	
 }
 
 void put_snake_in_map(t_snake_game *snake)
@@ -188,17 +191,31 @@ void put_snake_in_map(t_snake_game *snake)
 
 void move_snake(t_snake_game *snake)
 {
-
-    if (snake->up)
+    if (snake->up && !snake->contin)
+	{
+		snake->contin = 1;
         move_body(snake,&snake->player->head, UP);
-    if (snake->down)
+	}
+    if (snake->down && !snake->contin)
+	{
+		snake->contin = 1;
+
        move_body(snake,&snake->player->head, DOWN);
-    if (snake->left)
+	}
+    if (snake->left && !snake->contin)
+	{
+		snake->contin = 1;
+
         move_body(snake,&snake->player->head, LEFT);
-    if (snake->right)
+	}
+    if (snake->right && !snake->contin)
+	{
         move_body(snake,&snake->player->head, RIGHT);
+		snake->contin = 1;
+
+	}
 	t_snake_node *a = snake->player->head;
-	while(a && !snake->stop)
+	while(a)
 	{
 		put_full_square(snake, a->x, a->y, 0xFFF);
 		a = a->next;
@@ -225,7 +242,7 @@ int	aft_lstsize(t_snake_node *lst)
 void fill_grid_with_fruits(t_snake_game *snake)
 {
 	for (int i = 0; i < 5; i++)
-		put_filled_circle(snake, snake->fruit[i].x*BLOCK+15, snake->fruit[i].y*BLOCK+15, 0xFF0000);
+		put_filled_circle(snake, snake->fruit[i].x * BLOCK + BLOCK / 2, snake->fruit[i].y * BLOCK + BLOCK / 2, 0xFF0000);
 } 
 
 void game_movement(t_snake_game *snake, double dt)
@@ -233,14 +250,16 @@ void game_movement(t_snake_game *snake, double dt)
 	
 	snake->accumulator += dt;
     while (snake->accumulator >= snake->move_interval) {
-        move_snake(snake);
-        snake->accumulator -= snake->move_interval;
+		move_snake(snake);
+        
+		snake->accumulator -= snake->move_interval;
 	}
     mlx_put_image_to_window(snake->con, snake->win, snake->img[1].img, 0,0); // preenche a window
-}
+}	
 
 int start_game(t_snake_game *snake)
 {
+	snake->contin = 0;
 	static int i = 0;
 	long long currentTime = current_time_ns();
     long long elapsed = currentTime - snake->previoustime;
@@ -255,8 +274,9 @@ int start_game(t_snake_game *snake)
     snake->lag += elapsed;
 	while (snake->lag >= FRAME_DURATION_NS)
 	{
+		
         game_movement(snake, FRAME_DURATION_NS / 1e9); // pass time in seconds
-        snake->lag -= FRAME_DURATION_NS;
+	    snake->lag -= FRAME_DURATION_NS;
     }
 
     return 0;
@@ -270,7 +290,7 @@ int key_press( int key, t_snake_game *snake)
     snake->down = false;
     snake->left = false;
     snake->right = false;
-	if (key == 119)
+	if (key == 119 && snake->can_move)
 	{
 		if (snake->dir !=1)
 		{
@@ -279,11 +299,9 @@ int key_press( int key, t_snake_game *snake)
 
 		}
 		else
-		{
 			snake->down = true;
-		}
 	}
-    if (key == 115)
+    if (key == 115 && snake->can_move )
 	{
 		if (snake->dir !=0)
 		{
@@ -294,7 +312,7 @@ int key_press( int key, t_snake_game *snake)
 		else
 			snake->up = true;
 	}
-    if (key == 97)
+    if (key == 97 && snake->can_move)
 	{
 		if (snake->dir != 3)
 		{
@@ -308,7 +326,7 @@ int key_press( int key, t_snake_game *snake)
 
 		}
 	}
-    if (key == 100)
+    if (key == 100 && snake->can_move)
 	{
 		if (snake->dir !=2)
         {

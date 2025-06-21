@@ -27,10 +27,11 @@ void create_snake(t_snake *snake_body)
 //	t_snake_node *a = (*snake_body->head);
 	if (!snake_body)
 		printf("snake_body->head ENPTY\n");
-	int f =  4;
+	short x_spawn =  4;
+	short y_spawn =  2;
 		while(++i < 4)
 	{
-		new_snake_node(&last, f-- * BLOCK, 2 * BLOCK);
+		new_snake_node(&last, x_spawn-- * BLOCK, y_spawn * BLOCK);
 		if (!snake_body->head)
 			snake_body->head = last;
 	}

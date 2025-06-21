@@ -56,10 +56,28 @@ void	put_square(t_snake_game *snake, int x, int y, int color)
 
 
 char	**get_map(void)
-{
+{             //****** map 1 ******
 	char	**map;
 
+	short i = 0;
+	map = malloc(sizeof(char *) * 40);
+	map[i] = "111111111111111111111111111111111111111111111111";
+	while(++i < 38 - 1)
+		map[i] = "100000000000000000000000000000000000000000000001";
+	map[i++] = "111111111111111111111111111111111111111111111111";
+	map[i] = NULL;
+	
+	return (map);
+}
+
+/* ************** map 2  ************ */
+
+/* char	**get_map(void)
+{
+	char	**map;
+	int i = 0;
 	map = malloc(sizeof(char *) * 22);
+	
 	map[0] = "11111111111111111111111";
 	map[1] = "10000000000000000000001";
 	map[2] = "10000000000000000000001";
@@ -80,7 +98,7 @@ char	**get_map(void)
 	map[17] = "11111111111111111111111";
 	map[18] = NULL;
 	return (map);
-}
+} */
 
 // char **get_map(){
 //     //char map[10][10];
@@ -109,29 +127,14 @@ void fill_grid(t_snake_game *snake)
 	int		x;
 	int		y;
 
-	x = -1;
-	y = 0;
 	map = snake->map;
 	if (!map)
 	{
 		printf("error on map\n");
 		exit(1);
-
 	}
-	color1 = 0x301934/* 0x00FF0F */;
-	color2 = 	/* 0x301934 */0x0000FF;
-	/* while (map[y])
-	{
-		x = -1;
-		while (map[y][++x])
-		if (map[y][x] == '0')
-		{
-			put_full_square(snake, x * BLOCK, y * BLOCK, color2);
-
-		}
-		y++;
-	} */
-    x = -1;
+	color1 = 0x301934;
+	color2 = 0x0000FF;
     y = -1;
     while (map[++y])
 	{
@@ -140,20 +143,21 @@ void fill_grid(t_snake_game *snake)
 			if (map[y][x] == '1')
 				put_full_square(snake, x * BLOCK, y * BLOCK, color1);
     }
-	double points_posx = (double)x - 2.6;
-	double points_posy = (double)y - 0.4;
-	mlx_string_put(snake->con, snake->win, points_posx * BLOCK , points_posy * BLOCK,0xCBC3E3 , "Points: ");
-	mlx_string_put(snake->con, snake->win, points_posx * BLOCK + 50 , points_posy * BLOCK ,0xCBC3E3 , ft_itoa(snake->points));
-
+	double points_posx = (double)x - 4.5/* - 2.6 */;
+	double points_posy = (double)y - 0.3;
+	mlx_string_put(snake->con, snake->win, points_posx * BLOCK , points_posy * BLOCK, 0xCBC3E3 , "Points: ");
+	mlx_string_put(snake->con, snake->win, points_posx * BLOCK + 45 , points_posy * BLOCK , 0xCBC3E3 , ft_itoa(snake->points));
+	/* 	45 e o tamanho que a palavra 'points' ocupa no mapa*/
 }
 
 
 void	put_filled_circle(t_snake_game *snake, int center_x, int center_y, int color)
 {
-	int radius = 10;
-	int dx, dy;
+	int dx = 0;
+	int dy = 0;
 
-
+// draw red part of the apple
+	int radius = BLOCK / 3;
 	for (int y = -radius; y <= radius; y++)
 	{
 		for (int x = -radius; x <= radius; x++)
@@ -166,7 +170,8 @@ void	put_filled_circle(t_snake_game *snake, int center_x, int center_y, int colo
 			}
 		}
 	}
-	radius = 12;
+	// draw green part of the apple
+	radius = BLOCK / 3 + BLOCK / 6;
 	for (int y = -radius; y <= radius; y++)
 	{
 		for (int  x= -radius; x <= radius; x++)
@@ -191,9 +196,9 @@ void	put_circle(t_snake_game *snake, int x, int y, int color)
 		theta = 0;
 		while (theta <= 2 * PI)
 		{
-			x = snake->fruit[i].x + 20 * cos(theta);
-			y = snake->fruit[i].y + 20 * sin(theta);
-			put_pixel(snake, x *BLOCK, y *BLOCK, color);
+			x = snake->fruit[i].x + BLOCK/2 * cos(theta);
+			y = snake->fruit[i].y + BLOCK/2 * sin(theta);
+			put_pixel(snake, x *BLOCK/2, y *BLOCK/2, color);
 			theta += 0.01;
 		}
 	}

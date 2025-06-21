@@ -49,7 +49,7 @@ void init_mlx_win(t_snake_game *game)
     game->con = mlx_init();
     game->win = mlx_new_window(game->con, get_map_width(game->map)*BLOCK + 1, get_map_heigh(game->map)*BLOCK + 1, "game game");
     game->img = (t_img *)malloc(sizeof(t_img) * 2);  // 0 window info, 1 display frames
-	
+	game->contin = 0;
     game->img[0].img = mlx_new_image(game->con, WIDTH, HEIGH);
 	game->img[0].addr = mlx_get_data_addr(game->img[0].img, &game->img[0].bpp, &game->img[0].size_line, &game->img[0].endian);
 	
@@ -66,9 +66,9 @@ void init_mlx_win(t_snake_game *game)
     game->previoustime = current_time_ns();
     game->lag = 0;
     game->accumulator = 0.0;
-    game->move_interval = 0.2;
+    game->move_interval = 0.08;
     game->points = 0;
-
+    game->can_move = true;
     init_fruit(game);
 	init_snake(game->player);
 	mlx_hook(game->win, 2, 1L << 0, key_press, game);
