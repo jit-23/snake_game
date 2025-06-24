@@ -274,15 +274,11 @@ int start_game(t_snake_game *snake)
     snake->lag += elapsed;
 	while (snake->lag >= FRAME_DURATION_NS)
 	{
-		
         game_movement(snake, FRAME_DURATION_NS / 1e9); // pass time in seconds
 	    snake->lag -= FRAME_DURATION_NS;
     }
-
     return 0;
 }
-
-
 
 int key_press( int key, t_snake_game *snake)
 {
@@ -290,54 +286,52 @@ int key_press( int key, t_snake_game *snake)
     snake->down = false;
     snake->left = false;
     snake->right = false;
-	if (key == 119 && snake->can_move)
+	if (key == 119 && !snake->contin)
 	{
+		snake->contin++;
 		if (snake->dir !=1)
 		{
         	snake->up = true;
 			snake->dir = 0;
-
 		}
 		else
 			snake->down = true;
 	}
-    if (key == 115 && snake->can_move )
+    if (key == 115 && !snake->contin)
 	{
+		snake->contin++;
 		if (snake->dir !=0)
 		{
         	snake->down = true;
 			snake->dir = 1;
-
 		}
 		else
 			snake->up = true;
 	}
-    if (key == 97 && snake->can_move)
+    if (key == 97 && !snake->contin)
 	{
+		snake->contin++;
 		if (snake->dir != 3)
 		{
         	snake->left = true;
 			snake->dir = 2;
-
 		}
 		else
 		{
 			snake->right = true;
-
 		}
 	}
-    if (key == 100 && snake->can_move)
+    if (key == 100 && !snake->contin)
 	{
+		snake->contin++;
 		if (snake->dir !=2)
         {
 			snake->right = true;
 			snake->dir = 3;
-
 		}
 		else
 		{
 			snake->left = true;
-
 		}
 	}
     if (key == 113 || key == 65307)
